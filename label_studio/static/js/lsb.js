@@ -164,7 +164,6 @@ const _convertTask = function(task) {
 
 const LSB = function(elid, config, task) {
   const _prepData = function(c) {
-    console.log('???', c)
     const data = c.serializeCompletion();
     const body = JSON.stringify({
       c_interval: c.interval, // confidence score interval of completion
