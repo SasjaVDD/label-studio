@@ -147,6 +147,7 @@ const _convertTask = function(task) {
       tc.createdAgo = tc.created_ago;
       tc.createdBy = tc.created_username;
       tc.leadTime = tc.lead_time;
+      tc.interval = tc.c_interval;
     }
   }
 
@@ -165,6 +166,7 @@ const LSB = function(elid, config, task) {
   const _prepData = function(c) {
     const data = c.serializeCompletion();
     const body = JSON.stringify({
+      c_interval: c.interval, // confidence score interval of completion
       lead_time: (new Date() - c.loadedDate) / 1000, // task execution time
       result: data,
     });
