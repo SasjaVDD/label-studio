@@ -234,7 +234,7 @@
             </a>
           </td>
           <!-- Double Checked -->
-          <td>{{ task.completions[0].c_doubleChecked }}</td>
+          <td>{{ task.completions ? task.completions[0].c_doubleChecked : false }}</td>
           <!-- Delete -->
           <td class="text-center" v-if="project.can_delete_tasks || project.can_manage_completions">
             <div class="actions-card">
