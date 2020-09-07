@@ -68,6 +68,17 @@
     .trash:hover {
         color: rgb(255, 13, 23);
     }
+
+    .comment-sector {
+        max-height: 100px !important;
+        max-width: 200px !important;
+        overflow-x: auto !important;
+        overflow-y: auto !important;
+    }
+
+    .comment-padding {
+        padding: 5px;
+    }
   </style>
 
   <div id="vue_loader" class="ui large text loader loading active">Loading ...</div>
@@ -206,6 +217,7 @@
                :class="{'fa-sort-up': this.order=='completed_at', 'fa-sort-down': this.order=='-completed_at'}"></i>
           </th>
           <th>Label</th>
+          <th>Comment</th>
           <th>Double Checked</th>
           <th v-if="project.can_delete_tasks || project.can_manage_completions">Delete</th>
         </tr>
@@ -232,6 +244,10 @@
             <a :href="'/?task_id=' + task.id">
               <i class="fas fa-eye eye show-completion"></i>
             </a>
+          </td>
+          <!-- Comment -->
+          <td class="comment-padding">
+            <div class="comment-sector">{{ task.completions ? task.completions[0].c_comment : "" }}</div>
           </td>
           <!-- Double Checked -->
           <td>{{ task.completions ? task.completions[0].c_doubleChecked : false }}</td>
