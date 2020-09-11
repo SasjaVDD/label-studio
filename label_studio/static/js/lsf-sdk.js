@@ -161,6 +161,8 @@ const _convertTask = function(task) {
       tc.createdAgo = tc.created_ago;
       tc.createdBy = tc.created_username;
       tc.leadTime = tc.lead_time;
+      tc.doubleChecked = tc.c_doubleChecked;
+      tc.comment = tc.c_comment;
     }
   }
 
@@ -182,6 +184,8 @@ const LSF_SDK = function(elid, config, task) {
 
   const _prepData = function(c, includeId) {
     var completion = {
+      c_doubleChecked: c.doubleChecked,
+      c_comment: c.comment,
       lead_time: (new Date() - c.loadedDate) / 1000,  // task execution time
       result: c.serializeCompletion()
     };
