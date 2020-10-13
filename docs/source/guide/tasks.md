@@ -1,7 +1,7 @@
 ---
-title: Import tasks
+title: Tasks
 type: guide
-order: 101
+order: 102
 ---
 
 ## Basic format
@@ -17,8 +17,8 @@ Label Studio expects the JSON-formatted list of _tasks_ as input. Each _task_ is
     - `<AudioPlus value="$key">`: `value` is taken as a valid URL to an audio file with CORS policy enabled on the server side
     - `<Image value="$key">`: `value` is a valid URL to an image file
 * (optional) **id** - integer task ID
-* (optional) **completions** - list of output annotation results, where each result is saved using [Label Studio's completion format](/guide/completions.html#completions). You can import annotation results in order to use them in consequent labeling task.
-* (optional) **predictions** - list of model prediction results, where each result is saved using [Label Studio's prediction format](/guide/completions.html#predictions). Importing predictions is useful for automatic task prelabeling & active learning & exploration.
+* (optional) **completions** - list of output annotation results, where each result is saved using [Label Studio's completion format](/guide/export.html#completions). You can import annotation results in order to use them in consequent labeling task.
+* (optional) **predictions** - list of model prediction results, where each result is saved using [Label Studio's prediction format](/guide/export.html#predictions). Importing predictions is useful for automatic task prelabeling & active learning & exploration.
 
 > Note: in case `"data"` field is missing in imported task object, the whole task body is interpreted as `task["data"]`, i.e. `[{"my_key": "my_value"}]` will be internally converted to `[{"data": {"my_key": "my_value"}}]`
 
@@ -88,11 +88,11 @@ Here is an example of a config and tasks list composed of one element, for text 
 
 There are a few possible ways to import data files to your labeling project:
 
- - Start Label Studio without specifying input path and then import through the web interfaces available at [http://127.0.0.1:8080/import](here)
+ - Start Label Studio without specifying input path and then import through the web interfaces available at [http://localhost:8080/import](http://localhost:8080/import)
 
  - Initialize Label Studio project and directly specify the paths, e.g. `label-studio init --input-path my_tasks.json --input-format json`
 
-The `--input-path` argument points to a file or a directory where your labeling tasks reside. By default it expects [JSON-formatted tasks](config.html#JSON-file), but you can also specify all other formats listed bellow by using `--input-format` option.
+The `--input-path` argument points to a file or a directory where your labeling tasks reside. By default it expects [JSON-formatted tasks](tasks.html#JSON), but you can also specify all other formats listed bellow by using `--input-format` option.
 
 ### JSON
 
@@ -176,6 +176,12 @@ http://<host:port>/data/filename?d=<path/to/the/local/directory>
 
 Supported formats are: `.wav` `.aiff` `.mp3` `.au` `.flac`
 
+### Upload resource files on Import page
+
+For label configs with one data key (e.g.: one input image) Label Studio supports a file uploading via GUI, 
+just drag & drop your files (or select them from file dialog) on "Import" page. 
+This option is suitable for limited file number.     
+
 
 ## Import using API
 
@@ -184,6 +190,53 @@ Use API to import tasks in [Label Studio basic format](tasks.html#Basic-format) 
 ```bash
 curl -X POST -H Content-Type:application/json http://localhost:8080/api/import \
 --data "[{\"my_key\": \"my_value_1\"}, {\"my_key\": \"my_value_2\"}]"
+```
+
+## Retrieve tasks using API
+
+You can retrieve project settings including total task count using API in JSON format: 
+
+```json   
+http://<host:port>/api/project
+```
+
+Response example: 
+
+```json
+{
+  ... 
+  "task_count": 3,
+  ...
+}
+```
+
+To get tasks with pagination in JSON format:
+
+```
+http://<host:port>/api/tasks?page=1&page_size=10&order={-}[id|completed_at]
+```
+
+Response example:
+ 
+```json
+[
+  {
+    "completed_at": "2020-05-29 03:31:15", 
+    "completions": [
+      {
+        "created_at": 1590712275, 
+        "id": 10001, 
+        "lead_time": 4.0, 
+        "result": [ ... ]
+      }
+    ], 
+    "data": {
+      "image": "s3://htx-dev/dataset/training_set/dogs/dog.102.jpg"
+    }, 
+    "id": 2, 
+    "predictions": []
+  }
+]
 ```
 
 ## Sampling

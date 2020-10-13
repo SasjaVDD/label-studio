@@ -17,7 +17,7 @@ function IsJsonString(str) {
 
 // Extract message from response to print it
 function message_from_response(result) {
-    console.log(result);
+    console.log('message_from_response', result);
 
     // result is dict
     if (result.hasOwnProperty("detail") && result.detail) return result.detail;
@@ -29,10 +29,14 @@ function message_from_response(result) {
         return result.responseJSON["detail"];
     }
     // something strange inside of responseJSON
-    else if (result.hasOwnProperty('responseJSON'))
+    else if (result.hasOwnProperty('responseJSON')) {
         return JSON.stringify(result.responseJSON);
+    }
+    else if (result.responseText) {
+        return result.responseText;
+    }
     else {
-        return 'Critical error on the server side'
+        return 'Critical error on the server side';
     }
 }
 
@@ -211,3 +215,24 @@ if (!String.prototype.includes) {
         return String.prototype.indexOf.apply(this, arguments) !== -1;
     };
 }
+
+// copy to clipboard
+var copyToClipboard = function (str) {
+  var el = document.createElement('textarea');  // Create a <textarea> element
+  el.value = str;                                 // Set its value to the string that you want copied
+  el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';                      // Move outside the screen to make it invisible
+  document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
+  var selected =
+    document.getSelection().rangeCount > 0        // Check if there is any content selected previously
+      ? document.getSelection().getRangeAt(0)     // Store selection if found
+      : false;                                    // Mark as false to know no selection existed before
+  el.select();                                    // Select the <textarea> content
+  document.execCommand('copy');                   // Copy - only works as a result of a user action (e.g. click events)
+  document.body.removeChild(el);                  // Remove the <textarea> element
+  if (selected) {                                 // If a selection existed before copying
+    document.getSelection().removeAllRanges();    // Unselect everything on the HTML document
+    document.getSelection().addRange(selected);   // Restore the original selection
+  }
+};

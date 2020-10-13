@@ -1,12 +1,12 @@
 ---
 title: Cloud storages
 type: guide
-order: 101
+order: 103
 ---
 
 You can integrate the popular cloud storage with Label Studio, collect new tasks uploaded to your buckets, and sync back annotation results to use them in your machine learning pipelines.
 
-Cloud storage type and bucket need to be configured during the start of the server, and further configured during the runtime via UI.
+You can configure storage type, bucket and prefixes during the start of the server or during the runtime via UI on **Tasks** page.
 
 You can configure one or both:
 
@@ -16,6 +16,8 @@ You can configure one or both:
 The connection to both storages is synced, so you can see new tasks after uploading them to the bucket without restarting Label Studio.
 
 The parameters like prefix or matching filename regex could be changed any time from the webapp interface.
+
+> Note: Choose target storage carefully: be sure it's empty when you just start labeling project, or it contains completions that match previously created/import tasks from source storage. Tasks are synced with completions based on internal ids (keys in `source.json`/`target.json` files in your project directory), so if you accidentally connect to the target storage with existed completions with the same ids, you may fail with undefined behaviour.  
 
 ## Amazon S3
 
@@ -44,7 +46,7 @@ When you are storing BLOBs in your S3 bucket (like images or audio files), you m
 Label Studio allows you to generate input tasks with corresponding URLs automatically on-the-fly. You can to this either specifying `--source-params` when launching app:
 
 ```bash
-label-studio start my_project --init --source s3 --source-path my-s3-bucket --source-params "{\"data_key\": \"my-object-tag-$value\", \"use_blob_urls\": true}"
+label-studio start my_project --init --source s3 --source-path my-s3-bucket --source-params "{\"data_key\": \"my-object-tag-$value\", \"use_blob_urls\": true, \"regex\": ".*"}"
 ```
 
 You can leave `"data_key"` empty (or skip it at all) then LS generates it automatically with the first task key from label config (it's useful when you have only one object tag exposed).
@@ -60,7 +62,7 @@ Bucket prefix (typically used to specify internal folder/container)
 
 #### regex
 
-A regular expression for filtering bucket objects
+A regular expression for filtering bucket objects. Default is skipping all bucket objects (Use ".*" explicitly to collect all objects)
 
 #### create_local_copy
 
@@ -98,7 +100,7 @@ When you are storing BLOBs in your GCS bucket (like images or audio files), you 
 Label Studio allows you to generate input tasks with corresponding URLs automatically on-the-fly. You can to this either specifying `--source-params` when launching app:
 
 ```bash
-label-studio start my_project --init --source gcs --source-path my-gcs-bucket --source-params "{\"data_key\": \"my-object-tag-$value\", \"use_blob_urls\": true}"
+label-studio start my_project --init --source gcs --source-path my-gcs-bucket --source-params "{\"data_key\": \"my-object-tag-$value\", \"use_blob_urls\": true, \"regex\": ".*"}"
 ```
 
 You can leave `"data_key"` empty (or skip it at all) then LS generates it automatically with the first task key from label config (it's useful when you have only one object tag exposed).
@@ -114,7 +116,7 @@ Bucket prefix (typically used to specify internal folder/container)
 
 #### regex
 
-A regular expression for filtering bucket objects
+A regular expression for filtering bucket objects. Default is skipping all bucket objects (Use ".*" explicitly to collect all objects)
 
 #### create_local_copy
 
